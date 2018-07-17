@@ -28,7 +28,7 @@ and compiled as follows:
 ```
 
 ## Analysis
- tl;dr: The shellcode basically does the following
+ **tl;dr**: The shellcode basically does the following
 
  ```
  execve("/bin/sh", ["/bin/sh", "-c", "whoami"], 0);
@@ -38,32 +38,30 @@ and compiled as follows:
 
 It is important to understand that the second parameter is not a single string, but a char pointer array. The last parameter can be left blank as it would only specify environment variables that we dont need here.
 
+The shellcode can be explained in 4 steps:
 
- 1.
-     push 0x3b ; pop rax => sycall execve in rax
-     cdq -> clear out rdx
+ 1. Prepare RAX with Execve Syscall
+     ```
+     push 0x3b 
+     pop 
+     cdq ; clear out rdx so that no environment variables are given
+     ```
 
- 2.
-     movabs rbx, "/bin/sh"
+ 2. Prepare RDI ( first parameter )
+     ```
+     movabs rbx,0x68732f6e69622f ; put '/bin/sh' in rbx
      push rbx
-     mov rdi, rsp -> rdi now points to /bin/sh
+     mov rdi, rsp ; rdi now points to /bin/sh
+     ```
 
-3. 
+3. Prepare argv on the stack
+    ```
     push "-c"
-    mov rsi, rsp -> rsi now points to -c. Argument for /bin/sh not to spawn a shell but to exec one single command
-
-4. 
-    
-    call   0x7fffffffdd57
-    // Creating the argv array on the stack
-    // Stack:
-    //    /bin/sh
-    //    -c
-    //    whoami
+    mov rsi, rsp ; rsi now points to -c. Argument for /bin/sh not to spawn a shell but to exec one single command
+    call   0x7fffffffdd57 ; 'whoami' is now on top of the stack
     push rsi ("-c")
-    push rdi ("/bin/sh")  
-    
+    push rdi ("/bin/sh")  ;
+    ```
+4. 
     syscall
 
-    rdi points to /bin/sh
-    rdi points to argv[] on the stack
