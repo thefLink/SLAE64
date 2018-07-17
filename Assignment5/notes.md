@@ -34,13 +34,13 @@ and compiled as follows:
  execve("/bin/sh", ["/bin/sh", "-c", "whoami"], 0);
  ```
     
- As we can see it starts /bin/sh with the -c command. The -c command tells the started SH not to be interactive, but to execute one single command ('whomai' in this case) and then exit.
+ As we can see it starts /bin/sh with the -c command. The -c command tells the started SH not to be interactive, but to execute one single command ('whoami' in this case) and then exit.
 
-It is important to understand that the second parameter is not a single string, but a char pointer array. The last parameter can be left blank as it would only specify environment variables that we dont need here.
+It is important to understand that the second parameter is not a single string, but an array of  char pointers. The last parameter can be left blank as it would only specify environment variables that we dont need here.
 
 The shellcode can be explained in 4 steps:
 
- 1. Prepare RAX with Execve Syscall
+ 1. Prepare RAX with Execve Syscall and null out rdx
      ```
      push 0x3b 
      pop 
@@ -56,12 +56,35 @@ The shellcode can be explained in 4 steps:
 
 3. Prepare argv on the stack
     ```
-    push "-c"
-    mov rsi, rsp ; rsi now points to -c. Argument for /bin/sh not to spawn a shell but to exec one single command
-    call   0x7fffffffdd57 ; 'whoami' is now on top of the stack
+    push   0x632d ; push "-c"
+    mov rsi, rsp ; rsi now points to -c.
+    push rdx ; Place a nullbyte on the stack
+    call   0x7fffffffdd57 ; The saved RIP on the stack is not actually an instruction, but 'whoami'. Which is on top of the stack after the call.
     push rsi ("-c")
-    push rdi ("/bin/sh")  ;
+    push rdi ("/bin/sh")  ; 
     ```
-4. 
+   
+   The stack now looks like this:
+   ```
+    +----------------------+
+    |                      |
+    |       /bin/sh        |
+    |                      |
+    +----------------------+
+    |                      |
+    |        -c            |
+    |                      |
+    +----------------------+
+    |                      |
+    |       whoami         |
+    |                      |
+    +----------------------+
+   ```
+
+
+
+4. Prepare RSI and do the syscall
+    
+    mov rsi,rsp ; RSI points to argv[] on the stack.
     syscall
 
