@@ -6,12 +6,12 @@ I created the shellcode using msfvenom like this:
 msfvenom -p linux/x64/exec CMD=whoami -f c
 ```
 
-as you can see by the CMD paramaeter I create a shellcode that does nothing else but executing the 'whoami' command.
+As you can see by the CMD paramaeter I create a shellcode that does nothing else but executing the 'whoami' command.
 
 ## Testmodule
 Next I placed the resulting char array in a C program:
 
-````
+```
     unsigned char shellcode[] =
     "\x6a\x3b\x58\x99\x48\xbb\x2f\x62\x69\x6e\x2f\x73\x68\x00\x53"
     "\x48\x89\xe7\x68\x2d\x63\x00\x00\x48\x89\xe6\x52\xe8\x07\x00"
