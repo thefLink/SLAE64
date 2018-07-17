@@ -85,6 +85,8 @@ The shellcode can be explained in 4 steps:
 
 4. Prepare RSI and do the syscall
     
+    ```
     mov rsi,rsp ; RSI points to argv[] on the stack.
     syscall
+    ```
 
