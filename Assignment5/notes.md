@@ -43,7 +43,7 @@ The shellcode can be explained in 4 steps:
  1. Prepare RAX with Execve Syscall and null out rdx
      ```
      push 0x3b 
-     pop 
+     pop rax
      cdq ; clear out rdx so that no environment variables are given
      ```
 
