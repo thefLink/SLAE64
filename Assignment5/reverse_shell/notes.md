@@ -84,7 +84,7 @@ gcc -m64 -z execstack -fno-stack-protector Test.c -o Test -no-pie
     push   rdx
     push   rdi
     mov    rsi,rsp
-    syscall ; execve("/bin/sh", "/bin/sh", 0);
+    syscall ; execve("/bin/sh", ["/bin/sh"], 0);
     ```
 
 
