@@ -21,21 +21,21 @@ xor byte [rdi + 11], 0x42
 syscall
   
 ; syscall read file
-xchg rdi, rax
-mov rax, rdx
+xchg rdi, rax ; put new fd in rdi
+mov rax, rdx ; rdx is still zero and can be used to null out rax
 mov dx, 0xfff; size to read
-sub sp, dx
+sub sp, dx ; Make some space on the stack
 push rsp
 pop rsi ; rsi points to buffer on stack
 syscall
   
 ; syscall write to stdout
-mov rdx, rax
+mov rdx, rax ; rax contains the number of read bytes
 xor rdi, rdi
 push rdi
-pop rax
-inc rdi
-inc al
+pop rax ; avoid xor rax,rax
+inc rdi ; rdi contains stdout
+inc al ; SYS_write
 syscall
   
 ; syscall exit
