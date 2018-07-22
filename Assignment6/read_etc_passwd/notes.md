@@ -22,5 +22,4 @@ http://shell-storm.org/shellcode/files/shellcode-878.php
     Mr. Un1k0d3r uses ```add dil, 1```. I replaced this by ```inc rdi``` which saves one byte.
 
 ## Outcome
-    
     The functionality of the source code stays the same, but it has a different fingerprint and is 3 bytes smaller then the original version.
