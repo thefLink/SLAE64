@@ -137,7 +137,7 @@ h2b( char *hex )
     int len = strlen(hex) / 3;
     int idx = 0;
     unsigned char tmp[len + 1];
-    unsigned char buf[2];
+    unsigned char buf[3];
 
     for ( int i = 1; i < strlen(hex); i+=3 ) {
         sprintf(buf, "%c%c", hex[i], hex[i + 1]);
