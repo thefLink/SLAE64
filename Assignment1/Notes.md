@@ -63,7 +63,7 @@ In order to create the struct I made use of shifting and used the lower bit regi
 ## Listen
 C pseudocode:
 ```
-; listen(fd, 2)
+; listen(fd, 1)
 ```
 ```
     push rax ; Rax should contain null as bind() is expected to work successfully
