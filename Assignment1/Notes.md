@@ -118,7 +118,7 @@ Assembly:
 
 Note that I store the read password in the sin_zero field of the sockaddr_in struct. I mean ... there are nullbytes already which mark the end of the password. :-)
 
-To compare the entered password with constant I did:
+To compare the entered password with the constant I did:
 ```
     cmp dword[rsi], PASSWORD ; Rsi still points to the sin_zero field which contains the entered pw.
     jne _burn ; Cause a sigsegv upon a wrong password
