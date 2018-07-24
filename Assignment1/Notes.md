@@ -23,7 +23,6 @@ And is achieved by:
     pop rdi ; rdi contains the AF_INET parameter
     push SOCK_STREAM
     pop rsi ; rsi contains the SOCK_STREAM parameter
-    cdq
 
     SYSCALL
 ```
