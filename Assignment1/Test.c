@@ -7,7 +7,6 @@ main(void)
 {       
         printf("Shellcode length: %d\n", (int)strlen(shellcode));
  
-        /* pollute registers and call shellcode */
         __asm__ (        "mov $0xffffffffffffffff, %rax\n\t"
                          "mov %rax, %rbx\n\t"
                          "mov %rax, %rcx\n\t"
