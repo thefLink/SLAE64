@@ -2,6 +2,7 @@ BITS 64
 ; Polymorphic version of Mr. Un1k0d3rs /etc/passwd read shellcode
 ; Orig Size: 82 bytes
 ; Polymorphic size: 75 bytes
+
 global _start
 
 section .text

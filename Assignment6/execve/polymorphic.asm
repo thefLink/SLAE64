@@ -1,6 +1,6 @@
-# Polymorphic shellcode version of http://shell-storm.org/shellcode/files/shellcode-76.php
-# Original size: 33 bytes
-# Polymorphic size: 31 bytes
+; Polymorphic shellcode version of http://shell-storm.org/shellcode/files/shellcode-76.php
+; Original size: 33 bytes
+; Polymorphic size: 31 bytes
 
 
 global _start
